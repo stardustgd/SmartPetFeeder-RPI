@@ -57,8 +57,8 @@ Starting HTTP server on 192.168.42.1:80
 Error: Cannot start HTTP server on '192.168.42.1:80': Address already in use (os error 98)
 ```
 
-This seems to be caused by a conflict between `wifi-connect` and `dnsmasq`. Adding the line `systemctl stop dnsmasq` in the script seems to fix the issue.
+This seems to be caused by a conflict between `wifi-connect` and `dnsmasq`. Adding the line `systemctl stop dnsmasq` in the script seems to fix the issue. If the issue still persists, there may be a conflict with `lighttpd`, since it uses port 80 as well. Disabling `lighttpd` with `systemctl disable lighttpd` fixes the issue.
 
 ### Captive Portal not opening
 
-For some reason, sometimes the captive portal does not open, but if you navigate to `smartpetfeeder.local:80`, it is there.
+If the captive portal does not open, this is because you ran `wifi-connect` to run on a port other than 80. Using port 80 fixes the issue and the captive portal opens after connecting to the access point.
