@@ -24,3 +24,8 @@ class AtlasClient:
             {"$setOnInsert": {"email": user_email, "mac_address": mac_address}},
             upsert=True,
         )
+
+    def get_schedules(self, user_email):
+        collection = self.get_collection("schedules")
+
+        return collection.find_one({"user": user_email})
