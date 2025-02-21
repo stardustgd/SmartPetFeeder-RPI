@@ -1,4 +1,9 @@
 import subprocess
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+CRON_SCRIPT = os.getenv("CRON_SCRIPT")
 
 
 def format_cron_jobs(results, SCRIPT_PATH):
@@ -25,5 +30,5 @@ def set_cron_jobs(results, SCRIPT_PATH):
         for job in cron_jobs:
             f.write(job + "\n")
 
-    result = subprocess.run(["scripts/crontab.sh"], capture_output=True, text=True)
+    result = subprocess.run([CRON_SCRIPT], capture_output=True, text=True)
     print(result.stdout)

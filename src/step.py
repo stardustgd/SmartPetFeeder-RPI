@@ -1,4 +1,4 @@
-import RPi.GPIO as GPIO
+import gpio_mock as GPIO
 import time
 from enum import Enum
 

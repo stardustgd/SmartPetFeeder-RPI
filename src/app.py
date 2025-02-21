@@ -26,3 +26,5 @@ atlas_client.add_mac_address(USER_EMAIL)
 # Get the user's schedules and create cron jobs
 results = atlas_client.get_schedules(USER_EMAIL)
 set_cron_jobs(results, CRON_SCRIPT_PATH)
+
+atlas_client.listen_for_changes(USER_EMAIL)
