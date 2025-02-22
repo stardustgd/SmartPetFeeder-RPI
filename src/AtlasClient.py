@@ -1,3 +1,4 @@
+from cron import set_cron_jobs
 from pymongo import MongoClient
 from getmac import get_mac_address
 
@@ -29,3 +30,30 @@ class AtlasClient:
         collection = self.get_collection("schedules")
 
         return collection.find_one({"user": user_email})
+
+    def get_manual_feeding_amount(self, user_email):
+        collection = self.get_collection("manualFeedings")
+
+        return collection.find_one({"user": user_email})["manualFeedingAmount"]
+
+    def listen_for_changes(self, user_email, CRON_SCRIPT_PATH):
+        collection = self.get_collection("schedules")
+
+        pipeline = [
+            {
+                "$match": {
+                    "fullDocument.user": user_email,
+                    "operationType": {"$in": ["update"]},
+                }
+            }
+        ]
+
+        with collection.watch(
+            pipeline=pipeline, full_document="updateLookup"
+        ) as stream:
+            for change in stream:
+                operation_type = change["operationType"]
+
+                if operation_type == "update":
+                    print("change")
+                    set_cron_jobs(change["fullDocument"], CRON_SCRIPT_PATH)

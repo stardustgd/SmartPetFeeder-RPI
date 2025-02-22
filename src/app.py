@@ -1,8 +1,6 @@
 from AtlasClient import AtlasClient
 from cron import set_cron_jobs
 from dotenv import load_dotenv
-
-# from email.utils import parseaddr
 import os
 import sys
 
@@ -26,3 +24,5 @@ atlas_client.add_mac_address(USER_EMAIL)
 # Get the user's schedules and create cron jobs
 results = atlas_client.get_schedules(USER_EMAIL)
 set_cron_jobs(results, CRON_SCRIPT_PATH)
+
+atlas_client.listen_for_changes(USER_EMAIL, CRON_SCRIPT_PATH)
