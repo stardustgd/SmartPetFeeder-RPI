@@ -74,5 +74,3 @@ def rotate_motor(direction=Direction.COUNTER_CLOCKWISE):
             break
 
         time.sleep(STEP_SLEEP)
-
-    cleanup()

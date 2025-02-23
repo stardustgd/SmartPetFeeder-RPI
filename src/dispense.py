@@ -1,5 +1,5 @@
 import sys
-from step import setup, rotate_motor
+from step import setup, cleanup, rotate_motor
 
 if len(sys.argv) != 2:
     print(f"Usage: python {sys.argv[0]} <amount>")
@@ -11,3 +11,5 @@ setup()
 
 for i in range(0, FEEDING_AMOUNT):
     rotate_motor()
+
+cleanup()
