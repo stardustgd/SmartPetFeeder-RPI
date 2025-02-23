@@ -1,5 +1,15 @@
 import subprocess
 
+days_to_num = {
+    "sunday": 0,
+    "monday": 1,
+    "tuesday": 2,
+    "wednesday": 3,
+    "thursday": 4,
+    "friday": 5,
+    "saturday": 6,
+}
+
 
 def format_cron_jobs(results, SCRIPT_PATH):
     cron_jobs = []
@@ -12,7 +22,7 @@ def format_cron_jobs(results, SCRIPT_PATH):
 
         for day in days:
             cron_jobs.append(
-                f"{time[1]} {time[0]} * * {day} {SCRIPT_PATH} {feeding_amount}"
+                f"{time[1]} {time[0]} * * {days_to_num[day]} {SCRIPT_PATH} {feeding_amount}"
             )
 
     return cron_jobs
