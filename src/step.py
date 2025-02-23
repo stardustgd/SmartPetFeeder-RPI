@@ -17,7 +17,7 @@ PIN4 = 22
 # careful lowering this, at some point you run into the mechanical limitation of how quick your motor can move
 STEP_SLEEP = 0.002
 
-STEP_COUNT = 4096  # 5.625*(1/64) per step, 4096 steps is 360°
+STEP_COUNT = 1024  # 5.625*(1/64) per step, 4096 steps is 360°
 
 rotate_direction = Direction.COUNTER_CLOCKWISE
 
@@ -34,7 +34,6 @@ STEP_SEQUENCE = [
 ]
 
 MOTOR_PINS = [PIN1, PIN2, PIN3, PIN4]
-motor_step_counter = 0
 
 
 def setup():
@@ -61,6 +60,7 @@ def cleanup():
 
 
 def rotate_motor(direction=Direction.COUNTER_CLOCKWISE):
+    motor_step_counter = 0
     for i in range(STEP_COUNT):
         for pin in range(0, len(MOTOR_PINS)):
             GPIO.output(MOTOR_PINS[pin], STEP_SEQUENCE[motor_step_counter][pin])

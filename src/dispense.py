@@ -1,4 +1,5 @@
 import sys
+import time
 from step import setup, cleanup, rotate_motor
 
 if len(sys.argv) != 2:
@@ -11,5 +12,6 @@ setup()
 
 for i in range(0, FEEDING_AMOUNT):
     rotate_motor()
+    time.sleep(1)
 
 cleanup()
