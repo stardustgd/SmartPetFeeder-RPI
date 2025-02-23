@@ -1,6 +1,8 @@
 from AtlasClient import AtlasClient
 from cron import set_cron_jobs
 from dotenv import load_dotenv
+import threading
+import signal
 
 # from email.utils import parseaddr
 import os
@@ -11,6 +13,12 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 load_dotenv()
+
+def signal_handler(sig, frame):
+    print("Program interrupted. Stopping threads.")
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)  # Handles Ctrl+C
 
 USER_EMAIL = sys.argv[1]
 ATLAS_URI = os.getenv("ATLAS_URI")
@@ -27,4 +35,16 @@ atlas_client.add_mac_address(USER_EMAIL)
 results = atlas_client.get_schedules(USER_EMAIL)
 set_cron_jobs(results, CRON_SCRIPT_PATH)
 
-atlas_client.listen_for_changes(USER_EMAIL)
+thread1 = threading.Thread(target=atlas_client.listen_for_changes, args=(USER_EMAIL, "schedules"))
+thread2 = threading.Thread(target=atlas_client.listen_for_changes, args=(USER_EMAIL, "manualFeedings"))
+
+thread1.daemon = True
+thread2.daemon = True
+
+# Start the threads
+thread1.start()
+thread2.start()
+
+# Wait for threads to finish (this will keep the main program running)
+thread1.join()
+thread2.join()

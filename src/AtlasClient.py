@@ -40,8 +40,9 @@ class AtlasClient:
 
         return collection.find_one({"user": user_email})['manualFeedingAmount']
     
-    def listen_for_changes(self, user_email):
-        collection = self.get_collection("schedules")
+    def listen_for_changes(self, user_email, collection_name):
+        # collections = ["schedules", "manualFeedings"]
+        collection = self.get_collection(collection_name)
 
         pipeline = [
             {"$match": {
@@ -53,5 +54,17 @@ class AtlasClient:
         with collection.watch(pipeline=pipeline, full_document='updateLookup') as stream:
             for change in stream:
                 operation_type = change["operationType"]
-                if operation_type == "update":
-                    set_cron_jobs(change["fullDocument"], self.CRON_SCRIPT_PATH)
+                if collection_name == "schedules":
+                    if operation_type == "update":
+                        set_cron_jobs(change["fullDocument"], self.CRON_SCRIPT_PATH)
+                elif collection_name == "manualFeedings":
+                    if operation_type == "update":
+                        feedingAmount = change['fullDocument']['manualFeedingAmount']
+                        if (change['fullDocument']['buttonToFeed']):
+                            print("Do Smth with feedingAmount Here: ")
+                            print(feedingAmount)
+                        collection.update_one(
+                            {"_id": change['fullDocument']["_id"]}, 
+                            {"$set": {"buttonToFeed": False}}
+                        )
+                        
