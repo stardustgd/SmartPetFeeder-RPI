@@ -1,5 +1,6 @@
 import os
 import sys
+import threading
 from AtlasClient import AtlasClient
 from cron import set_cron_jobs
 from dotenv import load_dotenv
@@ -30,7 +31,17 @@ class SmartPetFeeder:
     def run(self):
         self.setup()
 
-        self.atlas_client.listen_for_changes(self.USER_EMAIL, self.CRON_SCRIPT_PATH)
+        schedule_thread = threading.Thread(
+            target=self.atlas_client.listen_for_changes,
+            args=(self.USER_EMAIL, self.CRON_SCRIPT_PATH, "schedules"),
+        )
+        manual_feeding_thread = threading.Thread(
+            target=self.atlas_client.listen_for_changes,
+            args=(self.USER_EMAIL, self.CRON_SCRIPT_PATH, "manualFeedings"),
+        )
+
+        schedule_thread.start()
+        manual_feeding_thread.start()
 
 
 if __name__ == "__main__":
