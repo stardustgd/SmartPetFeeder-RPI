@@ -1,0 +1,3 @@
+export VPS_IP=
+export VPS_HOSTNAME=
+export PORT=
