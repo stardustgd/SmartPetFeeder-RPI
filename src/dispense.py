@@ -13,10 +13,10 @@ setup()
 
 # Set up hx711
 hx = HX711(dout=5, pd_sck=6)
-hx.setReferenceUnit(-3410)
+hx.setReferenceUnit(421.03056)
 
 feedAmt = 0
-while (feedAmt < FEEDING_AMOUNT):
+while feedAmt < FEEDING_AMOUNT:
     rotate_motor()
 
     rawBytes = hx.readRawBytes()
