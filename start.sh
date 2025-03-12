@@ -2,6 +2,8 @@
 
 source .env
 
+source ./.venv/bin/activate
+
 while true; do
     wget -q --spider http://google.com
 
@@ -14,3 +16,5 @@ while true; do
         sleep 5
     fi
 done
+
+deactivate
