@@ -22,7 +22,7 @@ def format_cron_jobs(results, SCRIPT_PATH):
 
         for day in days:
             cron_jobs.append(
-                f"{time[1]} {time[0]} * * {days_to_num[day]} {SCRIPT_PATH} {feeding_amount}"
+                f'{time[1]} {time[0]} * * {days_to_num[day]} /bin/bash -c "{SCRIPT_PATH} {feeding_amount}"'
             )
 
     return cron_jobs
