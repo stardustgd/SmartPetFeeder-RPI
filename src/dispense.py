@@ -56,17 +56,20 @@ steps = [50, 106, 166, 221]
 def dispense_food(target_weight):
     current_weight = read_weight()
 
-    while current_weight < target_weight:
-        for step in steps:
-            servo.angle = step
-            current_weight = read_weight()
+    try:
+        while current_weight < target_weight:
+            for step in steps:
+                servo.angle = step
+                current_weight = read_weight()
 
-            if current_weight >= target_weight:
-                return
+                if current_weight >= target_weight:
+                    raise StopIteration
 
-        # Reset servo
+            # Reset servo
+            servo.angle = 0
+            time.sleep(2)
+    except (StopIteration, KeyboardInterrupt):
         servo.angle = 0
-        time.sleep(2)
 
 
 dispense_food(FEEDING_AMOUNT)
