@@ -1,20 +1,26 @@
 #!/bin/bash
 
-source .env
+cd $HOME/SmartPetFeeder-RPI
 
-source ./.venv/bin/activate
+source .env
 
 while true; do
     wget -q --spider http://google.com
 
     if [ $? -eq 0 ]; then
+        echo "Starting camera"
+        ./scripts/mjpeg.sh &
+        
         echo "Running Smart Pet Feeder"
-        python src/SmartPetFeeder.py $USER_EMAIL
-        ./scripts/mjpeg.sh
+        source ./.venv/bin/activate
+        python src/SmartPetFeeder.py $USER_EMAIL &
+        deactivate
+
         break
     else
         sleep 5
     fi
 done
 
-deactivate
+# Keep the script running
+sleep infinity
