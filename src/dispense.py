@@ -50,7 +50,7 @@ def read_weight(samples=10, delay=0.05):
     return sum(weights) / len(weights)
 
 
-steps = [50, 106, 166, 221]
+steps = [61, 119, 178, 230]
 
 
 def dispense_food(target_weight):
