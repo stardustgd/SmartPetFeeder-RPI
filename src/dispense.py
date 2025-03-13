@@ -1,6 +1,8 @@
+import board
 import sys
 import time
-from adafruit_servokit import ServoKit
+from adafruit_motor import servo
+from adafruit_pca9685 import PCA9685
 from drivers.hx711 import HX711
 
 if len(sys.argv) != 2:
@@ -8,16 +10,31 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 FEEDING_AMOUNT = int(sys.argv[1]) * 140
+SERVO_CHANNEL = 3
+SERVO_MIN_PULSE = 500
+SERVO_MAX_PULSE = 3000
+SERVO_ACTUATION_RANGE = 270
 
-kit = ServoKit(channels=16)
-kit.servo[7].actuation_range = 270
+# Set up servo
+i2c = board.I2C()
+pca = PCA9685(i2c)
+pca.frequency = 50
+servo = servo.Servo(
+    pca.channels[SERVO_CHANNEL],
+    min_pulse=SERVO_MIN_PULSE,
+    max_pulse=SERVO_MAX_PULSE,
+    actuation_range=SERVO_ACTUATION_RANGE,
+)
+
+servo.angle = 0
+
 
 # Set up hx711
 hx = HX711(dout=5, pd_sck=6)
 hx.setReferenceUnit(421.03056)
 
 
-def read_weight(samples=16, delay=0.05):
+def read_weight(samples=10, delay=0.05):
     weights = []
 
     for _ in range(samples):
@@ -33,27 +50,24 @@ def read_weight(samples=16, delay=0.05):
     return sum(weights) / len(weights)
 
 
-def dispense_food(channel, target_weight, step=1, delay=0.02):
+steps = [50, 106, 166, 221]
+
+
+def dispense_food(target_weight):
     current_weight = read_weight()
 
     while current_weight < target_weight:
-        for angle in range(0, 270, step):
-            kit.servo[channel].angle = angle
-            time.sleep(delay)
-
+        for step in steps:
+            servo.angle = step
             current_weight = read_weight()
 
             if current_weight >= target_weight:
                 return
 
-        for angle in range(270, 0, -step):
-            kit.servo[channel].angle = angle
-            time.sleep(delay)
-            current_weight = read_weight()
-
-            if current_weight >= target_weight:
-                return
+        # Reset servo
+        servo.angle = 0
+        time.sleep(2)
 
 
-dispense_food(7, FEEDING_AMOUNT)
+dispense_food(FEEDING_AMOUNT)
 hx.powerDown()
