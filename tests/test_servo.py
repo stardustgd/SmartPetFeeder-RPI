@@ -36,7 +36,7 @@ try:
     while True:
         angle = int(input("Enter angle:"))
 
-        move_servo(servo, angle, delay=0.1)
+        move_servo(test_servo, angle, delay=0.1)
 except KeyboardInterrupt:
     print("Exiting")
-    move_servo(servo, 0)
+    move_servo(test_servo, 0)
