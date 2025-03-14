@@ -13,7 +13,7 @@ FEEDING_AMOUNT = int(sys.argv[1]) * 140
 SERVO_CHANNEL = 3
 SERVO_MIN_PULSE = 500
 SERVO_MAX_PULSE = 3000
-SERVO_ACTUATION_RANGE = 270
+SERVO_ACTUATION_RANGE = 180
 
 # Set up servo
 i2c = board.I2C()
@@ -27,7 +27,7 @@ servo = servo.Servo(
 )
 
 servo.angle = 0
-
+steps = [0, 42]
 
 # Set up hx711
 hx = HX711(dout=5, pd_sck=6)
@@ -50,9 +50,6 @@ def read_weight(samples=10, delay=0.05):
     return sum(weights) / len(weights)
 
 
-steps = [61, 119, 178, 230]
-
-
 def dispense_food(target_weight):
     current_weight = read_weight()
 
@@ -60,14 +57,14 @@ def dispense_food(target_weight):
         while current_weight < target_weight:
             for step in steps:
                 servo.angle = step
-                current_weight = read_weight()
+                time.sleep(0.35)
 
-                if current_weight >= target_weight:
-                    raise StopIteration
+            current_weight = read_weight()
 
-            # Reset servo
-            servo.angle = 0
-            time.sleep(2)
+            if current_weight >= target_weight:
+                raise StopIteration
+
+            time.sleep(1)
     except (StopIteration, KeyboardInterrupt):
         servo.angle = 0
 
