@@ -9,7 +9,7 @@ if len(sys.argv) != 2:
     print(f"Usage: python {sys.argv[0]} <amount>")
     sys.exit(1)
 
-FEEDING_AMOUNT = int(sys.argv[1]) * 140
+FEEDING_AMOUNT = int(sys.argv[1])
 SERVO_CHANNEL = 3
 SERVO_MIN_PULSE = 500
 SERVO_MAX_PULSE = 3000
@@ -32,6 +32,8 @@ steps = [0, 42]
 # Set up hx711
 hx = HX711(dout=5, pd_sck=6)
 hx.setReferenceUnit(421.03056)
+hx.setReadingFormat("MSB", "MSB")
+hx.autosetOffset()
 
 
 def read_weight(samples=10, delay=0.05):
@@ -59,6 +61,8 @@ def dispense_food(target_weight):
                 servo.angle = step
                 time.sleep(0.35)
 
+            servo.angle = 0
+
             current_weight = read_weight()
 
             if current_weight >= target_weight:
@@ -70,4 +74,5 @@ def dispense_food(target_weight):
 
 
 dispense_food(FEEDING_AMOUNT)
+print(f"Final weight: {read_weight()}")
 hx.powerDown()
