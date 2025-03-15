@@ -28,12 +28,15 @@ servo = servo.Servo(
 
 servo.angle = 0
 
-steps = [61, 119, 178, 230]
+steps = [0, 42]
 
-for i in range(0, FEEDING_AMOUNT):
-    for step in steps:
-        servo.angle = step
-        time.sleep(2)
+try:
+    for i in range(0, FEEDING_AMOUNT):
+        for step in steps:
+            servo.angle = step
+            time.sleep(0.35)
 
+        servo.angle = 0
+        time.sleep(1)
+except KeyboardInterrupt:
     servo.angle = 0
-    time.sleep(3)
