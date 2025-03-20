@@ -13,7 +13,7 @@
 ![Shell][shell-badge]
 
 
-This repository contains all the Raspberry Pi modules of the Smart Pet Feeder.
+This repository contains all the Raspberry Pi modules of the [Smart Pet Feeder](https://github.com/stardustgd/SmartPetFeeder).
 </div>
 
 [rpi]: https://www.raspberrypi.com/
